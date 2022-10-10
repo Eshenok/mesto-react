@@ -23,8 +23,6 @@ function Main (props) {
 			})
 	}, []);
 	
-	console.log(cards);
-	
 	return (
 		<main className="content">
 			<section className="profile">
@@ -38,8 +36,8 @@ function Main (props) {
 			</section>
 			
 			<section className="photo-grid">
-				{cards.map((card) => (
-				<Card onCardClick={props.onSelectCard} card={card} />
+				{cards.map((card, i) => (
+				<Card key={i} onCardClick={props.onSelectCard} card={card} />
 				))}
 			</section>
 			

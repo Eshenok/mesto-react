@@ -1,4 +1,4 @@
-import '../App.css';
+import './App.css';
 import React, {useState, useEffect} from 'react';
 import Header from './Header.js';
 import Main from './Main.js';
@@ -12,12 +12,7 @@ function App() {
 	const [isEditAvatarPopupOpen, setEditAvatarPopup] = useState(false);
 	const [isAddCardPopupOpen, setAddCardPopup] = useState(false);
 	const [isImagePopupOpen, setImagePopup] = useState(false);
-	const [selectedCard, setSelectedCard] = useState(false);
-	
-	useEffect(() => {
-		document.addEventListener('keydown', handlePressEsc);
-		return () => {document.removeEventListener('keydown', handlePressEsc)};
-	}, [isEditAvatarPopupOpen, isAddCardPopupOpen, isEditProfilePopupOpen]);
+	const [selectedCard, setSelectedCard] = useState({});
 	
 	function handlePressEsc (e) {
 		if (e.key === 'Escape') {
@@ -40,7 +35,7 @@ function App() {
 	setAddCardPopup(false);
 	setEditProfilePopup(false);
 	setImagePopup(false);
-	setSelectedCard(false);
+	setSelectedCard({});
 	}
 	
 	return (
@@ -50,7 +45,7 @@ function App() {
 			<Main onSelectCard={handleCardClick} onEditProfile={handleEditProfile} onEditAvatar={handleEditAvatar} onAddCard={handleAddCard}  onImage={handleImagePopup}/>
 			<Footer />
 			
-			<PopupWithForm onClose={closeAllPopups} title={"Редактировать профиль"} name={"edit-profile"} buttonTitle={"Сохранить"} isOpen={isEditProfilePopupOpen}>
+			<PopupWithForm onPressEsc={handlePressEsc} onClose={closeAllPopups} title={"Редактировать профиль"} name={"edit-profile"} buttonTitle={"Сохранить"} isOpen={isEditProfilePopupOpen}>
 				<div className="popup__label">
 					<input type="text" id="popup__input-name" className="popup__input popup__input_type_name"
 					       name="popup__input_type_name" minLength="2" maxLength="40" required placeholder="Введите имя"/>
@@ -64,7 +59,7 @@ function App() {
 				</div>
 			</PopupWithForm>
 			
-			<PopupWithForm onClose={closeAllPopups} title={"Обновить аватар"} name={"profile-image"} buttonTitle={"Сохранить"} isOpen={isEditAvatarPopupOpen}>
+			<PopupWithForm onPressEsc={handlePressEsc} onClose={closeAllPopups} title={"Обновить аватар"} name={"profile-image"} buttonTitle={"Сохранить"} isOpen={isEditAvatarPopupOpen}>
 				<div className="popup__label">
 					<input type="url" id="popup__input-profile-image"
 					       className="popup__input popup__input_type_profile-image" name="popup__input_type_profile-image"
@@ -73,8 +68,8 @@ function App() {
 				</div>
 			</PopupWithForm>
 			
-			<PopupWithForm onClose={closeAllPopups} title={"Вы уверены?"} name={"confirm"} buttonTitle={"Да"} />
-			<PopupWithForm onClose={closeAllPopups} title={"Новое место"} name={"add-card"} buttonTitle={"Создать"} isOpen={isAddCardPopupOpen}>
+			<PopupWithForm onPressEsc={handlePressEsc} onClose={closeAllPopups} title={"Вы уверены?"} name={"confirm"} buttonTitle={"Да"} />
+			<PopupWithForm onPressEsc={handlePressEsc} onClose={closeAllPopups} title={"Новое место"} name={"add-card"} buttonTitle={"Создать"} isOpen={isAddCardPopupOpen}>
 				<div className="popup__label">
 					<input type="text" id="popup__input-image-caption"
 					       className="popup__input popup__input_type_image-caption" name="popup__input_type_image-caption"
@@ -88,7 +83,7 @@ function App() {
 				</div>
 			</PopupWithForm>
 			
-			<ImagePopup card={selectedCard} onClose={closeAllPopups} />
+			<ImagePopup onPressEsc={handlePressEsc} card={selectedCard} onClose={closeAllPopups} />
 		</>
 	);
 }
