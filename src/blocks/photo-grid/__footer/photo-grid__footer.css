@@ -1,0 +1,7 @@
+.photo-grid__footer {
+  background-color: #fff;
+  padding: 22px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

@@ -1,0 +1,8 @@
+.photo-grid__item {
+  position: relative;
+  margin: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}

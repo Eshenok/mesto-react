@@ -1,0 +1,4 @@
+.button_icon_like-counter {
+	transition: transform 0.5s linear;
+	transform: translateY(0);
+}

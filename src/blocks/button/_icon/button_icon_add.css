@@ -1,0 +1,16 @@
+.button_icon_add {
+  padding: 0;
+  width: 150px;
+  height: 50px;
+  background-image: url('../../../images/add-button.svg');
+  background-color: #000;
+  align-self: center;
+  }
+  
+@media screen and (max-width: 768px) {
+  .button_icon_add {
+    width: 282px;
+    background-size: 18px 18px;
+    border: 2px solid #fff;
+  }
+}

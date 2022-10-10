@@ -1,0 +1,15 @@
+.button_icon_delete {
+  width: 18px;
+  height: 19px;
+  background-image: url('../../../images/trash.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: block;
+}
+
+.button_icon_delete:hover {
+  opacity: 0.6;
+}
