@@ -89,7 +89,6 @@ function App() {
 			</PopupWithForm>
 			
 			<ImagePopup card={selectedCard} onClose={closeAllPopups} />
-			{/*/!*<script src="./pages/index.js" type="module"></script>*!/*/}
 		</>
 	);
 }
