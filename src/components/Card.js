@@ -21,7 +21,7 @@ export default function Card (props) {
 				<h2 className="photo-grid__caption">{props.card.name}</h2>
 				<div className="photo-grid__like-container">
 					<button type="button" className={cardLikeButtonClassName}></button>
-					<p className="photo-grid__counter">{props.card.likes.length}</p>
+					<p className="photo-grid__counter">asdaa{props.card.likes.length}</p>
 				</div>
 			</div>
 			<button type="button" className={cardDeleteButtonClassName}></button>
