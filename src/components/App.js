@@ -5,6 +5,8 @@ import Main from './Main.js';
 import Footer from './Footer.js';
 import PopupWithForm from "./PopupWithForm.js";
 import ImagePopup from "./ImagePopup.js";
+import Api from '../utils/Api.js';
+import {CurrentUserContext} from "../contexts/CurrentUserContext.js";
 
 function App() {
 	
@@ -13,6 +15,15 @@ function App() {
 	const [isAddCardPopupOpen, setAddCardPopup] = useState(false);
 	const [isImagePopupOpen, setImagePopup] = useState(false);
 	const [selectedCard, setSelectedCard] = useState({});
+	const [currentUser, setCurrentUser] = useState({});
+	
+	useEffect(() => {
+		Api.getUserInfo()
+			.then((res) => {
+				setCurrentUser(res);
+			})
+			.catch((err) => {console.log(err)})
+	});
 	
 	function handlePressEsc (e) {
 		if (e.key === 'Escape') {
@@ -39,7 +50,7 @@ function App() {
 	}
 	
 	return (
-		<>
+		<CurrentUserContext.Provider value={currentUser}>
 		
 			<Header />
 			<Main onSelectCard={handleCardClick} onEditProfile={handleEditProfile} onEditAvatar={handleEditAvatar} onAddCard={handleAddCard}  onImage={handleImagePopup}/>
@@ -84,7 +95,7 @@ function App() {
 			</PopupWithForm>
 			
 			<ImagePopup onPressEsc={handlePressEsc} card={selectedCard} onClose={closeAllPopups} />
-		</>
+		</CurrentUserContext.Provider>
 	);
 }
 
