@@ -6,11 +6,13 @@ import React from "react";
 
 export default function Input(props) {
 	
+	const atr = props.atr;
+	
 	function handleChange(e) {
 		props.change(e.target.value);
 	}
 	
 	return (
-		<input {...props} onChange={handleChange} />
+		<input {...atr} onChange={handleChange} />
 	)
 }

@@ -17,34 +17,38 @@ export default function EditProfilePopup (props) {
 	function handleSubmit(e) {
 		e.preventDefault();
 		props.onSubmit({name: name, about: about});
+		setName('');
+		setAbout('');
 	}
 	
 	return (
 		<PopupWithForm onSubmit={handleSubmit} onPressEsc={props.onPressEsc} onClose={props.onClose} title={"Редактировать профиль"} name={"edit-profile"} buttonTitle={"Сохранить"} isOpen={props.isOpen}>
 			<div className="popup__label">
-				<Input type="text"
-				       id="popup__input-name"
-				       className="popup__input popup__input_type_name"
-				       name="popup__input_type_name"
-				       minLength="2"
-				       maxLength="40"
-				       required={true}
-				       placeholder="Введите имя"
-				       value={name}
+				<Input atr={{type: "text",
+				       id: "popup__input-name",
+				       className: "popup__input popup__input_type_name",
+				       name: "popup__input_type_name",
+				       minLength: "2",
+				       maxLength: "40",
+				       required: true,
+				       placeholder: "Введите имя",
+				       value: name,}}
 				       change={setName}
 				/>
 				<span className="popup__input-span-error popup__input-name-error"> </span>
 			</div>
 			<div className="popup__label">
-				<Input type="text"
-				       id="popup__input-occupation"
-				       className="popup__input popup__input_type_occupation"
-				       name="popup__input_type_occupation"
-				       minLength="2"
-				       maxLength="200"
-				       required={true}
-				       placeholder="Укажите род деятельности"
-				       value={about}
+				<Input atr={{
+					type: "text",
+					id: "popup__input-occupation",
+					className: "popup__input popup__input_type_occupation",
+					name: "popup__input_type_occupation",
+					minLength: "2",
+					maxLength: "200",
+					required: true,
+					placeholder: "Укажите род деятельности",
+					value: about,}
+				}
 				       change={setAbout}
 				/>
 				<span className="popup__input-span-error popup__input-occupation-error"> </span>

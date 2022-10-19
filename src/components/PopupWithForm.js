@@ -14,7 +14,7 @@ function PopupWithForm (props) {
 	if (props.isOpen) {
 		classes.push('popup_opened');
 	}
-		
+	
 		return (
 		<div className={classes.join(' ')}>
 			<div onClick={props.onClose} className="popup__overlay"></div>
