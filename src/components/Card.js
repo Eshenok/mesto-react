@@ -4,15 +4,24 @@ import {CurrentUserContext} from "../contexts/CurrentUserContext.js";
 export default function Card (props) {
 	const currentUser = useContext(CurrentUserContext);
 	
-	const isOwn = props.card.owner._id === currentUser._id;
-	const cardDeleteButtonClassName = (
-		`button button_icon_delete ${isOwn ? '' : 'button_type_none'}`
-	);
+	const cardDeleteButtonClassName = (`button button_icon_delete ${checkIsOwn() ? '' : 'button_type_none'}`);
+	const cardLikeButtonClassName = (`button button_icon_like ${checkIsLiked() ? 'button_icon_like-active' : ''}`);
 	
-	const isLiked = props.card.likes.some((item) => {return (item._id === currentUser._id)});
-	const cardLikeButtonClassName = (
-		`button button_icon_like ${isLiked ? 'button_icon_like-active' : ''}`
-	)
+	function checkIsLiked () {
+		return props.card.likes.some((item) => {return (item._id === currentUser._id)});
+	}
+	
+	function checkIsOwn () {
+		return props.card.owner._id === currentUser._id;
+	}
+	
+	function handleLikeClick() {
+		props.onCardLike(props.card, checkIsLiked());
+	}
+	
+	function handleDelClick() {
+		props.onCardDel(props.card);
+	}
 	
 	return (
 		<article className="photo-grid__item">
@@ -20,11 +29,11 @@ export default function Card (props) {
 			<div className="photo-grid__footer">
 				<h2 className="photo-grid__caption">{props.card.name}</h2>
 				<div className="photo-grid__like-container">
-					<button type="button" className={cardLikeButtonClassName}></button>
-					<p className="photo-grid__counter">asdaa{props.card.likes.length}</p>
+					<button type="button" className={cardLikeButtonClassName} onClick={handleLikeClick}></button>
+					<p className="photo-grid__counter">{props.card.likes.length}</p>
 				</div>
 			</div>
-			<button type="button" className={cardDeleteButtonClassName}></button>
+			<button type="button" className={cardDeleteButtonClassName} onClick={handleDelClick}></button>
 		</article>
 	)
 }
