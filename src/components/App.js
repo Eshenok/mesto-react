@@ -7,6 +7,7 @@ import PopupWithForm from "./PopupWithForm.js";
 import ImagePopup from "./ImagePopup.js";
 import Api from '../utils/Api.js';
 import {CurrentUserContext} from "../contexts/CurrentUserContext.js";
+import EditProfilePopup from "./EditProfilePopup.js";
 
 function App() {
 	
@@ -23,7 +24,7 @@ function App() {
 				setCurrentUser(res);
 			})
 			.catch((err) => {console.log(err)})
-	});
+	}, []);
 	
 	function handlePressEsc (e) {
 		if (e.key === 'Escape') {
@@ -56,19 +57,7 @@ function App() {
 			<Main onSelectCard={handleCardClick} onEditProfile={handleEditProfile} onEditAvatar={handleEditAvatar} onAddCard={handleAddCard}  onImage={handleImagePopup}/>
 			<Footer />
 			
-			<PopupWithForm onPressEsc={handlePressEsc} onClose={closeAllPopups} title={"Редактировать профиль"} name={"edit-profile"} buttonTitle={"Сохранить"} isOpen={isEditProfilePopupOpen}>
-				<div className="popup__label">
-					<input type="text" id="popup__input-name" className="popup__input popup__input_type_name"
-					       name="popup__input_type_name" minLength="2" maxLength="40" required placeholder="Введите имя"/>
-					<span className="popup__input-span-error popup__input-name-error"> </span>
-				</div>
-				<div className="popup__label">
-					<input type="text" id="popup__input-occupation" className="popup__input popup__input_type_occupation"
-					       name="popup__input_type_occupation" minLength="2" maxLength="200" required
-					       placeholder="Укажите род деятельности"/>
-					<span className="popup__input-span-error popup__input-occupation-error"> </span>
-				</div>
-			</PopupWithForm>
+			<EditProfilePopup onPressEsc={handlePressEsc} onClose={closeAllPopups}  isOpen={isEditProfilePopupOpen} />
 			
 			<PopupWithForm onPressEsc={handlePressEsc} onClose={closeAllPopups} title={"Обновить аватар"} name={"profile-image"} buttonTitle={"Сохранить"} isOpen={isEditAvatarPopupOpen}>
 				<div className="popup__label">
