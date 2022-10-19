@@ -19,6 +19,27 @@ function Main (props) {
 			})
 	}, []);
 	
+	function handleCardLike(card, isLiked) {
+		if (!isLiked) {
+			Api.putLike(card._id)
+				.then((res) => {
+					setCards((state) => state.map((c) => c._id === card._id ? res : c)); // не понял как работает
+				}).catch(err => console.log(err));
+		} else {
+			Api.removeLike(card._id)
+				.then((res) => {
+					setCards((state) => state.map((c) => c._id === card._id ? res : c)); // не понял как работает
+				}).catch(err => console.log(err));
+		}
+	};
+	
+	function handleDelCard (card) {
+		Api.removeCard(card._id)
+			.then((res) => {
+				setCards((state) => state.filter(item => item._id !== card._id)) // вернет массив без удаленной карточки
+			}).catch((err) => console.log(err));
+	}
+	
 	return (
 		<main className="content">
 			<section className="profile">
@@ -33,7 +54,7 @@ function Main (props) {
 			
 			<section className="photo-grid">
 				{cards.map((card, i) => (
-				<Card key={card._id} onCardClick={props.onSelectCard} card={card} />
+				<Card onCardDel={handleDelCard} onCardLike={handleCardLike} key={card._id} onCardClick={props.onSelectCard} card={card} />
 				))}
 			</section>
 			
