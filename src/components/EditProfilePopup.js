@@ -14,8 +14,13 @@ export default function EditProfilePopup (props) {
 		setAbout(currentUser.about);
 	}, [currentUser]);
 	
+	function handleSubmit(e) {
+		e.preventDefault();
+		props.onSubmit({name: name, about: about});
+	}
+	
 	return (
-		<PopupWithForm onPressEsc={props.onPressEsc} onClose={props.onClose} title={"Редактировать профиль"} name={"edit-profile"} buttonTitle={"Сохранить"} isOpen={props.isOpen}>
+		<PopupWithForm onSubmit={handleSubmit} onPressEsc={props.onPressEsc} onClose={props.onClose} title={"Редактировать профиль"} name={"edit-profile"} buttonTitle={"Сохранить"} isOpen={props.isOpen}>
 			<div className="popup__label">
 				<Input type="text"
 				       id="popup__input-name"

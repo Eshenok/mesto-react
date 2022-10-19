@@ -32,6 +32,14 @@ function App() {
 		}
 	}
 	
+	function putProfileData ({name, about}) {
+		Api.putProfileData(name, about)
+			.then((res) => {
+				setCurrentUser(res);
+				closeAllPopups();
+			}).catch((err) => console.log(err))
+	}
+	
 	function handleCardClick (e) {setSelectedCard(e.target)};
 	
 	function handleEditProfile () {setEditProfilePopup(!isEditProfilePopupOpen)};
@@ -57,7 +65,7 @@ function App() {
 			<Main onSelectCard={handleCardClick} onEditProfile={handleEditProfile} onEditAvatar={handleEditAvatar} onAddCard={handleAddCard}  onImage={handleImagePopup}/>
 			<Footer />
 			
-			<EditProfilePopup onPressEsc={handlePressEsc} onClose={closeAllPopups}  isOpen={isEditProfilePopupOpen} />
+			<EditProfilePopup onSubmit={putProfileData} onPressEsc={handlePressEsc} onClose={closeAllPopups}  isOpen={isEditProfilePopupOpen} />
 			
 			<PopupWithForm onPressEsc={handlePressEsc} onClose={closeAllPopups} title={"Обновить аватар"} name={"profile-image"} buttonTitle={"Сохранить"} isOpen={isEditAvatarPopupOpen}>
 				<div className="popup__label">
