@@ -4,13 +4,6 @@ import React from "react";
 * все остальные пропсы для атрибутов
 */
 
-export default function Input(props) {
-	
-	function handleChange(e) {
-		props.change(e.target.value);
-	}
-	
-	return (
-		<input {...props.atr} onChange={handleChange} value={props.atr.value || ''}/> //строчка value предотвращает value undefined
-	)
+export const Input = ({onChange, value, ...rest }) => {
+	return <input onChange = {onChange} {...rest} value={value || ''} />
 }
