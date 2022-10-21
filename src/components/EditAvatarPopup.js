@@ -9,6 +9,7 @@ export default function EditAvatarPopup (props) {
 	function handleSubmit(e) {
 		e.preventDefault();
 		props.onSubmit(avatarRef.current.value);
+		avatarRef.current.value='';
 	}
 	
 	return (
