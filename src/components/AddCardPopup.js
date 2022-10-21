@@ -24,7 +24,7 @@ export default function AddCardPopup (props) {
 					name="popup__input_type_image-caption"
 					minLength="2"
 					maxLength="30"
-					required
+					required={true}
 					placeholder="Название"
 				/>
 				<span className="popup__input-span-error popup__input-image-caption-error"> </span>
@@ -35,7 +35,7 @@ export default function AddCardPopup (props) {
 					id="popup__input-image-src"
 					className="popup__input popup__input_type_image-src"
 					name="popup__input_type_image-src"
-					required
+					required={true}
 					placeholder="Ссылка на картинку"
 				/>
 				<span className="popup__input-span-error popup__input-image-src-error"> </span>

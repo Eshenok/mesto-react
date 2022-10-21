@@ -4,6 +4,6 @@ import React from "react";
 * все остальные пропсы для атрибутов
 */
 
-export const Input = ({onChange, ...rest }) => {
-	return <input onChange={onChange || false} {...rest} />
+export const Input = ({onChange, value, ...rest }) => {
+	return <input onChange = {onChange} {...rest} value={value || ''} />
 }

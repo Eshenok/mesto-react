@@ -1,10 +1,9 @@
-import React, {useRef, useState} from "react";
+import React, {useRef} from "react";
 import PopupWithForm from "./PopupWithForm.js";
-import {Input} from "./Input.js";
 
 export default function EditAvatarPopup (props) {
 	
-	const avatarRef = useRef();
+	const avatarRef = useRef('');
 	
 	function handleSubmit(e) {
 		e.preventDefault();
@@ -15,7 +14,7 @@ export default function EditAvatarPopup (props) {
 	return (
 		<PopupWithForm onSubmit={handleSubmit} onPressEsc={props.onPressEsc} onClose={props.onClose} title={"Обновить аватар"} name={"profile-image"} buttonTitle={"Сохранить"} isOpen={props.isOpen}>
 			<div className="popup__label">
-				<Input type="url" //из-за рефа не могу сделать компонентом
+				<input type="url" //из-за рефа не могу сделать компонентом
 				       id="popup__input-profile-image"
 				       className="popup__input popup__input_type_profile-image"
 				       name="popup__input_type_profile-image"
