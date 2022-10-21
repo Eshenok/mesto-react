@@ -11,6 +11,6 @@ export default function Input(props) {
 	}
 	
 	return (
-		<input {...props.atr} onChange={handleChange}/> //строчка value предотвращает value undefined
+		<input {...props.atr} onChange={handleChange} value={props.atr.value || ''}/> //строчка value предотвращает value undefined
 	)
 }
