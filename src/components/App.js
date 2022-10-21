@@ -9,6 +9,7 @@ import Api from '../utils/Api.js';
 import {CurrentUserContext} from "../contexts/CurrentUserContext.js";
 import EditProfilePopup from "./EditProfilePopup.js";
 import EditAvatarPopup from "./EditAvatarPopup";
+import AddCardPopup from "./AddCardPopup";
 
 function App() {
 	
@@ -48,6 +49,7 @@ function App() {
 			}).catch((err) => console.log(err))
 	}
 	
+	/* Card */
 	function handleCardLike(card, isLiked) {
 		if (!isLiked) {
 			Api.putLike(card._id)
@@ -67,6 +69,14 @@ function App() {
 			.then((res) => {
 				setCards((state) => state.filter(item => item._id !== card._id)) // вернет массив без удаленной карточки
 			}).catch((err) => console.log(err));
+	}
+	
+	function putNewCard (name, link) {
+		Api.putNewCard(name, link)
+			.then((res) => {
+				setCards([res, ...cards]);
+				closeAllPopups();
+			}).catch(err => console.log(err));
 	}
 	
 	/* Функции открытия попапов */
@@ -103,21 +113,9 @@ function App() {
 			
 			<EditProfilePopup onSubmit={putProfileData} onPressEsc={handlePressEsc} onClose={closeAllPopups} isOpen={isEditProfilePopupOpen} />
 			<EditAvatarPopup onSubmit={putAvatar} onPressEsc={handlePressEsc} onClose={closeAllPopups}  isOpen={isEditAvatarPopupOpen} />
-			
+			<AddCardPopup onSubmit={putNewCard} onPressEsc={handlePressEsc} onClose={closeAllPopups} isOpen={isAddCardPopupOpen} />
 			<PopupWithForm onPressEsc={handlePressEsc} onClose={closeAllPopups} title={"Вы уверены?"} name={"confirm"} buttonTitle={"Да"} />
-			<PopupWithForm onPressEsc={handlePressEsc} onClose={closeAllPopups} title={"Новое место"} name={"add-card"} buttonTitle={"Создать"} isOpen={isAddCardPopupOpen}>
-				<div className="popup__label">
-					<input type="text" id="popup__input-image-caption"
-					       className="popup__input popup__input_type_image-caption" name="popup__input_type_image-caption"
-					       minLength="2" maxLength="30" required placeholder="Название"/>
-					<span className="popup__input-span-error popup__input-image-caption-error"> </span>
-				</div>
-				<div className="popup__label">
-					<input type="url" id="popup__input-image-src" className="popup__input popup__input_type_image-src"
-					       name="popup__input_type_image-src" required placeholder="Ссылка на картинку"/>
-					<span className="popup__input-span-error popup__input-image-src-error"> </span>
-				</div>
-			</PopupWithForm>
+			
 			
 			<ImagePopup onPressEsc={handlePressEsc} card={selectedCard} onClose={closeAllPopups} />
 		</CurrentUserContext.Provider>
