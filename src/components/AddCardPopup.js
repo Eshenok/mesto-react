@@ -25,7 +25,7 @@ export default function AddCardPopup (props) {
 					maxLength: "30",
 					required: true,
 					placeholder: "Название",
-					value: name,
+					value: name
 				}}
 				       change={setName}
 				/>
@@ -38,7 +38,7 @@ export default function AddCardPopup (props) {
 					name: "popup__input_type_image-src",
 					required: true ,
 					placeholder: "Ссылка на картинку",
-					value: link,
+					value: link
 				}}
 				change={setLink}
 				/>
