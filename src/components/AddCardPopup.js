@@ -24,7 +24,7 @@ export default function AddCardPopup (props) {
 					required: true,
 					placeholder: "Название",
 				}}
-				change={setName}
+				       change={setName}
 				/>
 				<span className="popup__input-span-error popup__input-image-caption-error"> </span>
 			</div>
