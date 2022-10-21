@@ -10,6 +10,8 @@ export default function AddCardPopup (props) {
 	function handleSubmit (e) {
 		e.preventDefault();
 		props.onSubmit(name, link);
+		setName('');
+		setLink('');
 	}
 	
 	return (
