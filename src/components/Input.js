@@ -11,6 +11,6 @@ export default function Input(props) {
 	}
 	
 	return (
-		<input {...props.atr} onChange={handleChange} />
+		<input {...props.atr} onChange={handleChange} value={props.atr.value || ''}/>
 	)
 }
