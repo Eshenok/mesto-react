@@ -6,13 +6,11 @@ import React from "react";
 
 export default function Input(props) {
 	
-	const atr = props.atr;
-	
 	function handleChange(e) {
 		props.change(e.target.value);
 	}
 	
 	return (
-		<input {...atr} onChange={handleChange} />
+		<input {...props.atr} onChange={handleChange} value={props.atr.value || ''}/> //строчка value предотвращает value undefined
 	)
 }

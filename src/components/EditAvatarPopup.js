@@ -1,5 +1,6 @@
 import React, {useRef} from "react";
 import PopupWithForm from "./PopupWithForm.js";
+import Input from "./Input.js";
 
 export default function EditAvatarPopup (props) {
 	
@@ -14,7 +15,7 @@ export default function EditAvatarPopup (props) {
 	return (
 		<PopupWithForm onSubmit={handleSubmit} onPressEsc={props.onPressEsc} onClose={props.onClose} title={"Обновить аватар"} name={"profile-image"} buttonTitle={"Сохранить"} isOpen={props.isOpen}>
 			<div className="popup__label">
-				<input atr={{type: "url",
+				<Input atr={{type: "url",
 				       id: "popup__input-profile-image",
 				       className: "popup__input popup__input_type_profile-image",
 				       name: "popup__input_type_profile-image",

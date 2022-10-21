@@ -2,18 +2,17 @@ import {useEffect} from "react";
 
 function PopupWithForm (props) {
 	
+	const classes = ['popup', `popup_type_${props.name}`];
+	if (props.isOpen) {
+		classes.push('popup_opened');
+	}
+	
 	useEffect(() => {
 		if (props.isOpen) {
 			document.addEventListener('keydown', props.onPressEsc);
 		}
 			return () => {document.removeEventListener('keydown', props.onPressEsc)};
-		
 	}, [props.isOpen])
-	
-	const classes = ['popup', `popup_type_${props.name}`];
-	if (props.isOpen) {
-		classes.push('popup_opened');
-	}
 	
 		return (
 		<div className={classes.join(' ')}>
