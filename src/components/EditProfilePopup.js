@@ -12,13 +12,11 @@ export default function EditProfilePopup (props) {
 	useEffect(() => {
 		setName(currentUser.name);
 		setAbout(currentUser.about);
-	}, [currentUser]);
+	}, [currentUser, props.isOpen]);
 	
 	function handleSubmit(e) {
 		e.preventDefault();
 		props.onSubmit({name: name, about: about});
-		setName('');
-		setAbout('');
 	}
 	
 	return (

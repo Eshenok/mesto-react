@@ -1,4 +1,3 @@
-import './App.css';
 import React, {useState, useEffect} from 'react';
 import Header from './Header.js';
 import Main from './Main.js';
@@ -13,7 +12,7 @@ import AddCardPopup from "./AddCardPopup";
 
 function App() {
 	
-	const [isEditProfilePopupOpen, setEditProfilePopup] = useState(false);
+	const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
 	const [isEditAvatarPopupOpen, setEditAvatarPopup] = useState(false);
 	const [isAddCardPopupOpen, setAddCardPopup] = useState(false);
 	const [isImagePopupOpen, setImagePopup] = useState(false);
@@ -62,11 +61,11 @@ function App() {
 					setCards((state) => state.map((c) => c._id === card._id ? res : c)); // изменит в массиве только нужную карточку
 				}).catch(err => console.log(err));
 		}
-	};
+	}
 	
 	function handleDelCard (card) {
 		Api.removeCard(card._id)
-			.then((res) => {
+			.then(() => {
 				setCards((state) => state.filter(item => item._id !== card._id)) // вернет массив без удаленной карточки
 			}).catch((err) => console.log(err));
 	}
@@ -80,22 +79,22 @@ function App() {
 	}
 	
 	/* Функции открытия попапов */
-	function handleCardClick (e) {setSelectedCard(e.target)};
+	function handleCardClick (e) {setSelectedCard(e.target)}
 	
-	function handleEditProfile () {setEditProfilePopup(!isEditProfilePopupOpen)};
+	function handleEditProfile () {setIsEditProfilePopupOpen(!isEditProfilePopupOpen)}
 	
-	function handleEditAvatar () {setEditAvatarPopup(!isEditAvatarPopupOpen)};
+	function handleEditAvatar () {setEditAvatarPopup(!isEditAvatarPopupOpen)}
 	
-	function handleAddCard () {setAddCardPopup(!isAddCardPopupOpen)};
+	function handleAddCard () {setAddCardPopup(!isAddCardPopupOpen)}
 	
-	function handleImagePopup () {setImagePopup(!isImagePopupOpen)};
+	function handleImagePopup () {setImagePopup(!isImagePopupOpen)}
 	
 	function closeAllPopups () {
-	setEditAvatarPopup(false);
-	setAddCardPopup(false);
-	setEditProfilePopup(false);
-	setImagePopup(false);
-	setSelectedCard({});
+		setEditAvatarPopup(false);
+		setAddCardPopup(false);
+		setIsEditProfilePopupOpen(false);
+		setImagePopup(false);
+		setSelectedCard({});
 	}
 	
 	function handlePressEsc (e) {
@@ -106,17 +105,14 @@ function App() {
 	
 	return (
 		<CurrentUserContext.Provider value={currentUser}>
-		
 			<Header />
 			<Main cards={cards} onCardLike={handleCardLike} onCardDel={handleDelCard} onSelectCard={handleCardClick} onEditProfile={handleEditProfile} onEditAvatar={handleEditAvatar} onAddCard={handleAddCard}  onImage={handleImagePopup}/>
 			<Footer />
-			
+			{/*компоненты попапов*/}
 			<EditProfilePopup onSubmit={putProfileData} onPressEsc={handlePressEsc} onClose={closeAllPopups} isOpen={isEditProfilePopupOpen} />
 			<EditAvatarPopup onSubmit={putAvatar} onPressEsc={handlePressEsc} onClose={closeAllPopups}  isOpen={isEditAvatarPopupOpen} />
 			<AddCardPopup onSubmit={putNewCard} onPressEsc={handlePressEsc} onClose={closeAllPopups} isOpen={isAddCardPopupOpen} />
 			<PopupWithForm onPressEsc={handlePressEsc} onClose={closeAllPopups} title={"Вы уверены?"} name={"confirm"} buttonTitle={"Да"} />
-			
-			
 			<ImagePopup onPressEsc={handlePressEsc} card={selectedCard} onClose={closeAllPopups} />
 		</CurrentUserContext.Provider>
 	);
