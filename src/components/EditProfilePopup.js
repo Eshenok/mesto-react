@@ -20,7 +20,7 @@ export default function EditProfilePopup (props) {
 	}
 	
 	return (
-		<PopupWithForm onSubmit={handleSubmit} onPressEsc={props.onPressEsc} onClose={props.onClose} title={"Редактировать профиль"} name={"edit-profile"} buttonTitle={"Сохранить"} isOpen={props.isOpen}>
+		<PopupWithForm onSubmit={handleSubmit} onPressEsc={props.onPressEsc} onClose={props.onClose} title={"Редактировать профиль"} name={"edit-profile"} buttonTitle={props.buttonTitle} isOpen={props.isOpen}>
 			<div className="popup__label">
 				<Input value={name} onChange={(e) => setName(e.target.value)}
 				       type="text"

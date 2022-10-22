@@ -1,13 +1,6 @@
-import React, {useEffect} from "react";
+import React from "react";
 
-export default function ImagePopup ({card, onClose, onPressEsc}) {
-	
-	useEffect(() => {
-		if (Object.keys(card).length !== 0) {
-			document.addEventListener('keydown', onPressEsc);
-		}
-		return () => {document.removeEventListener('keydown', onPressEsc)};
-	}, [card]);
+export default function ImagePopup ({card, onClose}) {
 	
 	const classes = ['popup', `popup_type_image`];
 	if (Object.keys(card).length !== 0) {

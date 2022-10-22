@@ -18,7 +18,7 @@ export default function AddCardPopup (props) {
 	}, [props.isOpen])
 	
 	return (
-		<PopupWithForm onSubmit={handleSubmit} onPressEsc={props.onPressEsc} onClose={props.onClose} title={"Новое место"} name={"add-card"} buttonTitle={"Создать"} isOpen={props.isOpen}>
+		<PopupWithForm onSubmit={handleSubmit} onPressEsc={props.onPressEsc} onClose={props.onClose} title={"Новое место"} name={"add-card"} buttonTitle={props.buttonTitle} isOpen={props.isOpen}>
 			<div className="popup__label">
 				<Input  value={name} onChange={(e) => setName(e.target.value)}
 								type="text"
