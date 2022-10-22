@@ -2,16 +2,17 @@ import React, {useState, useEffect} from 'react';
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
-import PopupWithForm from "./PopupWithForm.js";
-import ImagePopup from "./ImagePopup.js";
+import ImagePopup from "./popups/ImagePopup.js";
 import Api from '../utils/Api.js';
 import {CurrentUserContext} from "../contexts/CurrentUserContext.js";
-import EditProfilePopup from "./EditProfilePopup.js";
-import EditAvatarPopup from "./EditAvatarPopup";
-import AddCardPopup from "./AddCardPopup";
+import EditProfilePopup from "./popups/EditProfilePopup.js";
+import EditAvatarPopup from "./popups/EditAvatarPopup.js";
+import AddCardPopup from "./popups/AddCardPopup.js";
+import ConfirmPopup from "./popups/ConfirmPopup.js";
 
 function App() {
 	
+	const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState(false);
 	const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
 	const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
 	const [isAddCardPopupOpen, setIsAddCardPopupOpen] = useState(false);
@@ -20,8 +21,9 @@ function App() {
 	const [currentUser, setCurrentUser] = useState({});
 	const [cards, setCards] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
+	const [currentCard, setCurrentCard] = useState('');
 	
-	const isOpen = isEditProfilePopupOpen || isEditAvatarPopupOpen || isAddCardPopupOpen || isImagePopupOpen;
+	const isOpen = isEditProfilePopupOpen || isEditAvatarPopupOpen || isAddCardPopupOpen || isImagePopupOpen || isConfirmPopupOpen;
 	
 	useEffect(() => {
 		Api.preloadData()
@@ -86,7 +88,7 @@ function App() {
 		}
 	}
 	
-	function handleDelCard (card) {
+	function removeCard (card) {
 		Api.removeCard(card._id)
 			.then(() => {
 				setCards((state) => state.filter(item => item._id !== card._id)) // вернет массив без удаленной карточки
@@ -113,8 +115,13 @@ function App() {
 	function handleEditProfile () {setIsEditProfilePopupOpen(!isEditProfilePopupOpen)}
 	function handleEditAvatar () {setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen)}
 	function handleAddCard () {setIsAddCardPopupOpen(!isAddCardPopupOpen)}
+	function handleRemoveCard (card) {
+		setIsConfirmPopupOpen(!isConfirmPopupOpen);
+		setCurrentCard(card);
+	}
 	
 	function closeAllPopups () {
+		setIsConfirmPopupOpen(false);
 		setIsEditAvatarPopupOpen(false);
 		setIsAddCardPopupOpen(false);
 		setIsEditProfilePopupOpen(false);
@@ -122,16 +129,24 @@ function App() {
 		setSelectedCard({});
 	}
 	
+	function submitRemoveCard () {
+		Api.removeCard(currentCard._id)
+			.then(() => {
+				setCards((state) => state.filter(item => item._id !== currentCard._id));// вернет массив без удаленной карточки
+				closeAllPopups();
+			}).catch((err) => console.log(err));
+	}
+	
 	return (
 		<CurrentUserContext.Provider value={currentUser}>
 			<Header />
-			<Main cards={cards} onCardLike={handleCardLike} onCardDel={handleDelCard} onSelectCard={handleCardClick} onEditProfile={handleEditProfile} onEditAvatar={handleEditAvatar} onAddCard={handleAddCard} />
+			<Main cards={cards} onCardLike={handleCardLike} onCardDel={handleRemoveCard} onSelectCard={handleCardClick} onEditProfile={handleEditProfile} onEditAvatar={handleEditAvatar} onAddCard={handleAddCard} />
 			<Footer />
 			{/*компоненты попапов*/}
 			<EditProfilePopup buttonTitle={isLoading ? 'Сохранение...' : 'Сохранить'} onSubmit={putProfileData} onClose={closeAllPopups} isOpen={isEditProfilePopupOpen} />
 			<EditAvatarPopup buttonTitle={isLoading ? 'Сохранение...' : 'Сохранить'} onSubmit={putAvatar} onClose={closeAllPopups}  isOpen={isEditAvatarPopupOpen} />
 			<AddCardPopup buttonTitle={isLoading ? 'Создаем...' : 'Создать'} onSubmit={putNewCard} onClose={closeAllPopups} isOpen={isAddCardPopupOpen} />
-			<PopupWithForm onClose={closeAllPopups} title={"Вы уверены?"} name={"confirm"} buttonTitle={"Да"} />
+			<ConfirmPopup onClose={closeAllPopups} isOpen={isConfirmPopupOpen} onSubmit={submitRemoveCard} />
 			<ImagePopup card={selectedCard} onClose={closeAllPopups} />
 		</CurrentUserContext.Provider>
 	);

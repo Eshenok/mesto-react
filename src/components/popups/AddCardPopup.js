@@ -1,6 +1,6 @@
 import PopupWithForm from "./PopupWithForm.js";
 import React, {useEffect, useState} from "react";
-import {Input} from "./Input.js";
+import {Input} from "../Input.js";
 
 export default function AddCardPopup (props) {
 	
