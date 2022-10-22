@@ -75,10 +75,7 @@
        headers: this._headers,
      })
        .then(res => {
-         if (res.ok) {
-           return true;
-         }
-         return Promise.reject(`Ошибка: ${res.status}`);
+         return this._getResponseData(res);
        })
    }
   

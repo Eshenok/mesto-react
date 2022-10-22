@@ -12,17 +12,15 @@ export default function EditProfilePopup (props) {
 	useEffect(() => {
 		setName(currentUser.name);
 		setAbout(currentUser.about);
-	}, [currentUser]);
+	}, [currentUser, props.isOpen]);
 	
 	function handleSubmit(e) {
 		e.preventDefault();
 		props.onSubmit({name: name, about: about});
-		setName('');
-		setAbout('');
 	}
 	
 	return (
-		<PopupWithForm onSubmit={handleSubmit} onPressEsc={props.onPressEsc} onClose={props.onClose} title={"Редактировать профиль"} name={"edit-profile"} buttonTitle={"Сохранить"} isOpen={props.isOpen}>
+		<PopupWithForm onSubmit={handleSubmit} onPressEsc={props.onPressEsc} onClose={props.onClose} title={"Редактировать профиль"} name={"edit-profile"} buttonTitle={props.buttonTitle} isOpen={props.isOpen}>
 			<div className="popup__label">
 				<Input value={name} onChange={(e) => setName(e.target.value)}
 				       type="text"
