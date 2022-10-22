@@ -20,7 +20,8 @@ export default function AddCardPopup (props) {
 	return (
 		<PopupWithForm onSubmit={handleSubmit} onPressEsc={props.onPressEsc} onClose={props.onClose} title={"Новое место"} name={"add-card"} buttonTitle={props.buttonTitle} isOpen={props.isOpen}>
 			<div className="popup__label">
-				<Input  value={name} onChange={(e) => setName(e.target.value)}
+				<Input  value={name}
+								onChange={(e) => setName(e.target.value)}
 								type="text"
 								id="popup__input-image-caption"
 								className="popup__input popup__input_type_image-caption"
@@ -30,10 +31,10 @@ export default function AddCardPopup (props) {
 								required={true}
 								placeholder="Название"
 				/>
-				<span className="popup__input-span-error popup__input-image-caption-error"> </span>
 			</div>
 			<div className="popup__label">
-				<Input value={link} onChange={(e) => setLink(e.target.value)}
+				<Input value={link}
+							 onChange={(e) => setLink(e.target.value)}
 							 type="url"
 							 id="popup__input-image-src"
 							 className="popup__input popup__input_type_image-src"
@@ -41,7 +42,6 @@ export default function AddCardPopup (props) {
 							 required={true}
 							 placeholder="Ссылка на картинку"
 				/>
-				<span className="popup__input-span-error popup__input-image-src-error"> </span>
 			</div>
 		</PopupWithForm>
 	)
