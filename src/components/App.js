@@ -88,13 +88,6 @@ function App() {
 		}
 	}
 	
-	function removeCard (card) {
-		Api.removeCard(card._id)
-			.then(() => {
-				setCards((state) => state.filter(item => item._id !== card._id)) // вернет массив без удаленной карточки
-			}).catch((err) => console.log(err));
-	}
-	
 	function putNewCard (name, link) {
 		setIsLoading(true);
 		Api.putNewCard(name, link)
@@ -134,7 +127,8 @@ function App() {
 			.then(() => {
 				setCards((state) => state.filter(item => item._id !== currentCard._id));// вернет массив без удаленной карточки
 				closeAllPopups();
-			}).catch((err) => console.log(err));
+			})
+			.catch((err) => console.log(err));
 	}
 	
 	return (
