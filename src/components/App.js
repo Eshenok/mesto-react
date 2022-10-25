@@ -9,6 +9,8 @@ import EditProfilePopup from "./popups/EditProfilePopup.js";
 import EditAvatarPopup from "./popups/EditAvatarPopup.js";
 import AddCardPopup from "./popups/AddCardPopup.js";
 import ConfirmPopup from "./popups/ConfirmPopup.js";
+import Login from "./Login";
+import Registry from "./Registry";
 
 function App() {
 	
@@ -148,6 +150,9 @@ function App() {
 			<AddCardPopup buttonTitle={isLoading ? 'Создаем...' : 'Создать'} onSubmit={putNewCard} onClose={closeAllPopups} isOpen={isAddCardPopupOpen} />
 			<ConfirmPopup onClose={closeAllPopups} isOpen={isConfirmPopupOpen} onSubmit={submitRemoveCard} />
 			<ImagePopup card={selectedCard} onClose={closeAllPopups} />
+			{/*компоненты auth*/}
+			<Login />
+			<Registry />
 		</CurrentUserContext.Provider>
 	);
 }
