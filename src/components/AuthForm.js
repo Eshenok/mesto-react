@@ -8,7 +8,7 @@ export default function AuthForm(props) {
 				<Input type="email" placeholder="Email"/>
 				<Input type="password" placeholder="Пароль"/>
 				<button type="button" className="button">{props.buttonTitle}</button>
-				{() => props.caption ? <p className="">props.caption</p> : <></>}
+				{props.caption ? <p className="">{props.caption}</p> : <></>}
 			</form>
 		</div>
 	)
