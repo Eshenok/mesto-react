@@ -1,0 +1,7 @@
+.authentication__footer {
+	position: absolute;
+	bottom: 80px;
+	display: flex;
+	flex-direction: column;
+	width: 358px;
+}

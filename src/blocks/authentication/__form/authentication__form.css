@@ -1,0 +1,7 @@
+.authentication__form {
+	margin: 0 auto;
+	display: grid;
+	flex-direction: column;
+	width: 358px;
+	gap: 30px;
+}

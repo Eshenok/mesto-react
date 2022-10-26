@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import { Routes, Route, Link} from "react-router-dom";
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
@@ -24,7 +25,7 @@ function App() {
 	const [cards, setCards] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [currentCard, setCurrentCard] = useState('');
-	
+
 	const isOpen = isEditProfilePopupOpen || isEditAvatarPopupOpen || isAddCardPopupOpen || isImagePopupOpen || isConfirmPopupOpen;
 	
 	useEffect(() => {
@@ -142,7 +143,16 @@ function App() {
 	return (
 		<CurrentUserContext.Provider value={currentUser}>
 			<Header />
-			<Main cards={cards} onCardLike={handleCardLike} onCardDel={handleRemoveCard} onSelectCard={handleCardClick} onEditProfile={handleEditProfile} onEditAvatar={handleEditAvatar} onAddCard={handleAddCard} />
+			<Routes>
+				<Route path="main"
+				element={
+					<Main cards={cards} onCardLike={handleCardLike} onCardDel={handleRemoveCard} onSelectCard={handleCardClick} onEditProfile={handleEditProfile} onEditAvatar={handleEditAvatar} onAddCard={handleAddCard} />
+				} />
+				{/*компоненты auth*/}
+				<Route path="/sign-in" element={<Login />} />
+				<Route path="/sign-up" element={<Registry />} />
+				<Route path="*" element={<NotFound />} />
+			</Routes>
 			<Footer />
 			{/*компоненты попапов*/}
 			<EditProfilePopup buttonTitle={isLoading ? 'Сохранение...' : 'Сохранить'} onSubmit={putProfileData} onClose={closeAllPopups} isOpen={isEditProfilePopupOpen} />
@@ -150,9 +160,6 @@ function App() {
 			<AddCardPopup buttonTitle={isLoading ? 'Создаем...' : 'Создать'} onSubmit={putNewCard} onClose={closeAllPopups} isOpen={isAddCardPopupOpen} />
 			<ConfirmPopup onClose={closeAllPopups} isOpen={isConfirmPopupOpen} onSubmit={submitRemoveCard} />
 			<ImagePopup card={selectedCard} onClose={closeAllPopups} />
-			{/*компоненты auth*/}
-			<Login />
-			<Registry />
 		</CurrentUserContext.Provider>
 	);
 }

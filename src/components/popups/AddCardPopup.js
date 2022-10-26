@@ -23,25 +23,23 @@ export default function AddCardPopup (props) {
 				<Input  value={name} onChange={(e) => setName(e.target.value)}
 								type="text"
 								id="popup__input-image-caption"
-								className="popup__input popup__input_type_image-caption"
+								className="input popup__input_type_image-caption"
 								name="popup__input_type_image-caption"
 								minLength="2"
 								maxLength="30"
 								required={true}
 								placeholder="Название"
 				/>
-				<span className="popup__input-span-error popup__input-image-caption-error"> </span>
 			</div>
 			<div className="popup__label">
 				<Input value={link} onChange={(e) => setLink(e.target.value)}
 							 type="url"
 							 id="popup__input-image-src"
-							 className="popup__input popup__input_type_image-src"
+							 className="input popup__input_type_image-src"
 							 name="popup__input_type_image-src"
 							 required={true}
 							 placeholder="Ссылка на картинку"
 				/>
-				<span className="popup__input-span-error popup__input-image-src-error"> </span>
 			</div>
 		</PopupWithForm>
 	)

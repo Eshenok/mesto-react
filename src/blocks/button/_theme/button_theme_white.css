@@ -1,0 +1,12 @@
+.button_theme_white {
+	color: black;
+	background-color: white;
+	text-align: center;
+	font-family: 'Inter', 'sans-serif', Arial;
+	font-style: normal;
+	font-weight: 400;
+	font-size: 18px;
+	line-height: 22px;
+	border-radius: 2px;
+	padding: 14px 0;
+}
