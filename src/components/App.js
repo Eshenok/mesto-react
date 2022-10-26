@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import { Routes, Route, Link} from "react-router-dom";
+import {Route, Link, useHistory, Redirect, Switch, BrowserRouter} from "react-router-dom";
 import Header from './Header.js';
-import Main from './Main.js';
+import Main from './pages/Main.js';
 import Footer from './Footer.js';
 import ImagePopup from "./popups/ImagePopup.js";
 import Api from '../utils/Api.js';
@@ -10,8 +10,9 @@ import EditProfilePopup from "./popups/EditProfilePopup.js";
 import EditAvatarPopup from "./popups/EditAvatarPopup.js";
 import AddCardPopup from "./popups/AddCardPopup.js";
 import ConfirmPopup from "./popups/ConfirmPopup.js";
-import Login from "./Login";
-import Registry from "./Registry";
+import Login from "./pages/Login";
+import Registry from "./pages/Registry";
+import ProtectedRoute from "./pages/ProtectedRoute";
 
 function App() {
 	
@@ -25,8 +26,10 @@ function App() {
 	const [cards, setCards] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [currentCard, setCurrentCard] = useState('');
-
+	const [loggedIn, setLoggedIn] = useState(false);
 	const isOpen = isEditProfilePopupOpen || isEditAvatarPopupOpen || isAddCardPopupOpen || isImagePopupOpen || isConfirmPopupOpen;
+	const history = useHistory();
+	
 	
 	useEffect(() => {
 		Api.preloadData()
@@ -52,6 +55,14 @@ function App() {
 			}
 		}
 	}, [isOpen])
+	
+	useEffect(() => {
+		if (localStorage.getItem('jwt')) {
+			const jwt = localStorage.getItem('jwt');
+			history.push('/main');
+			setLoggedIn(true);
+		}
+	}, [])
 	
 	/* Функции взаимодействия с API */
 	function putProfileData ({name, about}) {
@@ -143,17 +154,34 @@ function App() {
 	return (
 		<CurrentUserContext.Provider value={currentUser}>
 			<Header />
-			<Routes>
-				<Route path="main"
-				element={
-					<Main cards={cards} onCardLike={handleCardLike} onCardDel={handleRemoveCard} onSelectCard={handleCardClick} onEditProfile={handleEditProfile} onEditAvatar={handleEditAvatar} onAddCard={handleAddCard} />
-				} />
-				{/*компоненты auth*/}
-				<Route path="/sign-in" element={<Login />} />
-				<Route path="/sign-up" element={<Registry />} />
-				<Route path="*" element={<NotFound />} />
-			</Routes>
-			<Footer />
+			<BrowserRouter>
+				<Switch>
+					<ProtectedRoute
+						path="/main"
+						component={Main}
+						cards={cards}
+						onCardLike={handleCardLike}
+						onCardDel={handleRemoveCard}
+						onSelectCard={handleCardClick}
+						onEditProfile={handleEditProfile}
+						onEditAvatar={handleEditAvatar}
+						onAddCard={handleAddCard}
+						loggedIn={loggedIn}
+					/>
+					{/*компоненты auth*/}
+					<Route path="/sign-in">
+						<Login />
+					</Route>
+					<Route path="/sign-up">
+						<Registry />
+					</Route>
+					<Route exact path="/">
+						{loggedIn ? <Redirect to="/main" /> : <Redirect to="/sign-in" /> }
+					</Route>
+					{/*<Route path="*" element={<NotFound />} />*/}
+				</Switch>
+			</BrowserRouter>
+			{loggedIn ? <Footer /> : <></>}
 			{/*компоненты попапов*/}
 			<EditProfilePopup buttonTitle={isLoading ? 'Сохранение...' : 'Сохранить'} onSubmit={putProfileData} onClose={closeAllPopups} isOpen={isEditProfilePopupOpen} />
 			<EditAvatarPopup buttonTitle={isLoading ? 'Сохранение...' : 'Сохранить'} onSubmit={putAvatar} onClose={closeAllPopups}  isOpen={isEditAvatarPopupOpen} />
