@@ -59,7 +59,6 @@ function App() {
 	}, [isOpen])
 	
 	useEffect(() => {
-		console.log('useEffect')
 		tokenCheck();
 	}, [])
 	
@@ -77,22 +76,24 @@ function App() {
 	}
 	
 	function handleSubmitRegistry(email, pass) {
-		console.log('reg')
 		Auth.registry(email, pass).then((res) => {
-			console.log(res)
 			history.push('/sign-in');
 		}).catch((err) => {console.log(err)})
 	}
 	
 	function handleSubmitSignIn(email, pass) {
-		console.log('log')
 		Auth.authorize(email, pass).then((res) => {
 			console.log(res);
 			setLoggedIn(true);
 			localStorage.setItem('jwt', res);
 			history.push('/main');
-			console.log(loggedIn);
 		}).catch((err) => {console.log(err)})
+	}
+	
+	function handleSignOut() {
+		localStorage.removeItem('jwt');
+		history.push('/sign-in');
+		setLoggedIn(false);
 	}
 	
 	/* Функции взаимодействия с API */
