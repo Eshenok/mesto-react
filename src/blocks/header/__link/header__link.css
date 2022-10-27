@@ -6,6 +6,8 @@
   font-size: 18px;
   line-height: 22px;
   text-align: right;
+  text-decoration: none;
+  color: white;
 }
 
 @media screen and (max-width: 900px){

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Route, useHistory, Redirect, Switch} from "react-router-dom";
+import {Route, useHistory, Redirect, Switch, useRouteMatch} from "react-router-dom";
 import Header from './Header.js';
 import Main from './pages/Main.js';
 import Footer from './Footer.js';
@@ -29,9 +29,10 @@ function App() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [currentCard, setCurrentCard] = useState('');
 	const [loggedIn, setLoggedIn] = useState(false);
+	const [email, setEmail] = useState('');
 	const isOpen = isEditProfilePopupOpen || isEditAvatarPopupOpen || isAddCardPopupOpen || isImagePopupOpen || isConfirmPopupOpen;
 	const history = useHistory();
-	
+	let {path, url} = useRouteMatch();
 	
 	useEffect(() => {
 		Api.preloadData()
@@ -67,7 +68,8 @@ function App() {
 		const jwt = localStorage.getItem('jwt');
 		if (jwt) {
 			Auth.getContent(jwt).then((res) => {
-				if(res) {
+				console.log(res)
+				if(res.ok) {
 					setLoggedIn(true);
 					history.push('/main');
 				}
@@ -83,9 +85,10 @@ function App() {
 	
 	function handleSubmitSignIn(email, pass) {
 		Auth.authorize(email, pass).then((res) => {
-			console.log(res);
+			setEmail(email);
 			setLoggedIn(true);
-			localStorage.setItem('jwt', res);
+			localStorage.setItem('jwt', res.token);
+			console.log(localStorage.getItem('jwt'))
 			history.push('/main');
 		}).catch((err) => {console.log(err)})
 	}
@@ -185,7 +188,7 @@ function App() {
 
 	return (
 		<CurrentUserContext.Provider value={currentUser}>
-			<Header link={history.location.pathname} loggedIn={loggedIn}/>
+			<Header onClose={handleSignOut} email={email} link={history.location.pathname} loggedIn={loggedIn}/>
 				<Switch>
 					<ProtectedRoute
 						path="/main"

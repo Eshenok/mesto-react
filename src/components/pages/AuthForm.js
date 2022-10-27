@@ -1,5 +1,6 @@
 import {Input} from "../Input";
 import {useEffect, useRef, useState} from "react";
+import {Link} from "react-router-dom";
 
 export default function AuthForm(props) {
 
@@ -25,7 +26,7 @@ export default function AuthForm(props) {
 				<Input onChange={(e) => setPassword(e.target.value)} value={password} className="input input__place_auth" type="password" placeholder="Пароль"/>
 				<div className="authentication__footer">
 					<button type="submit" className="button button_theme_white">{props.buttonTitle}</button>
-					{props.caption ? <p className="authentication__caption">{props.caption}</p> : <></>}
+					{props.caption ? <Link to={'/sign-in'} className="authentication__caption">{props.caption}</Link> : <></>}
 				</div>
 			</form>
 		</div>
