@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {Route, Link, useHistory, Redirect, Switch, BrowserRouter} from "react-router-dom";
+import {Route, useHistory, Redirect, Switch} from "react-router-dom";
 import Header from './Header.js';
 import Main from './pages/Main.js';
 import Footer from './Footer.js';
 import ImagePopup from "./popups/ImagePopup.js";
 import Api from '../utils/Api.js';
+import Auth from "../utils/Auth.js";
 import {CurrentUserContext} from "../contexts/CurrentUserContext.js";
 import EditProfilePopup from "./popups/EditProfilePopup.js";
 import EditAvatarPopup from "./popups/EditAvatarPopup.js";
@@ -13,6 +14,7 @@ import ConfirmPopup from "./popups/ConfirmPopup.js";
 import Login from "./pages/Login";
 import Registry from "./pages/Registry";
 import ProtectedRoute from "./pages/ProtectedRoute";
+import NotFound from "./pages/NotFound";
 
 function App() {
 	
@@ -57,12 +59,41 @@ function App() {
 	}, [isOpen])
 	
 	useEffect(() => {
-		if (localStorage.getItem('jwt')) {
-			const jwt = localStorage.getItem('jwt');
-			history.push('/main');
-			setLoggedIn(true);
-		}
+		console.log('useEffect')
+		tokenCheck();
 	}, [])
+	
+	/*функции auth*/
+	function tokenCheck() {
+		const jwt = localStorage.getItem('jwt');
+		if (jwt) {
+			Auth.getContent(jwt).then((res) => {
+				if(res) {
+					setLoggedIn(true);
+					history.push('/main');
+				}
+			})
+		}
+	}
+	
+	function handleSubmitRegistry(email, pass) {
+		console.log('reg')
+		Auth.registry(email, pass).then((res) => {
+			console.log(res)
+			history.push('/sign-in');
+		}).catch((err) => {console.log(err)})
+	}
+	
+	function handleSubmitSignIn(email, pass) {
+		console.log('log')
+		Auth.authorize(email, pass).then((res) => {
+			console.log(res);
+			setLoggedIn(true);
+			localStorage.setItem('jwt', res);
+			history.push('/main');
+			console.log(loggedIn);
+		}).catch((err) => {console.log(err)})
+	}
 	
 	/* Функции взаимодействия с API */
 	function putProfileData ({name, about}) {
@@ -150,11 +181,10 @@ function App() {
 				closeAllPopups();
 			}).catch((err) => console.log(err));
 	}
-	
+
 	return (
 		<CurrentUserContext.Provider value={currentUser}>
-			<Header />
-			<BrowserRouter>
+			<Header link={history.location.pathname} loggedIn={loggedIn}/>
 				<Switch>
 					<ProtectedRoute
 						path="/main"
@@ -170,17 +200,21 @@ function App() {
 					/>
 					{/*компоненты auth*/}
 					<Route path="/sign-in">
-						<Login />
+						{loggedIn ? <Redirect to="/main" /> : <Login history={history} onSubmit={handleSubmitSignIn} />}
 					</Route>
+					
 					<Route path="/sign-up">
-						<Registry />
+						{loggedIn ? <Redirect to="/main" /> : <Registry history={history} onSubmit={handleSubmitRegistry} />}
 					</Route>
+					
 					<Route exact path="/">
 						{loggedIn ? <Redirect to="/main" /> : <Redirect to="/sign-in" /> }
 					</Route>
-					{/*<Route path="*" element={<NotFound />} />*/}
+					
+					<Route path="*">
+						<NotFound />
+					</Route>
 				</Switch>
-			</BrowserRouter>
 			{loggedIn ? <Footer /> : <></>}
 			{/*компоненты попапов*/}
 			<EditProfilePopup buttonTitle={isLoading ? 'Сохранение...' : 'Сохранить'} onSubmit={putProfileData} onClose={closeAllPopups} isOpen={isEditProfilePopupOpen} />
