@@ -19,13 +19,12 @@ export default function EditAvatarPopup (props) {
 			<div className="popup__label">
 				<input type="url" //из-за рефа не могу сделать компонентом
 				       id="popup__input-profile-image"
-				       className="popup__input popup__input_type_profile-image"
+				       className="input popup__input_type_profile-image"
 				       name="popup__input_type_profile-image"
 				       required
 				       placeholder="Ссылка на картинку"
 				       ref={avatarRef}
 				/>
-				<span className="popup__input-span-error popup__input-profile-image-error"> </span>
 			</div>
 		</PopupWithForm>
 	);

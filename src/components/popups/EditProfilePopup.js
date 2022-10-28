@@ -25,27 +25,25 @@ export default function EditProfilePopup (props) {
 				<Input value={name} onChange={(e) => setName(e.target.value)}
 				       type="text"
 					     id="popup__input-name"
-				       className="popup__input popup__input_type_name"
+				       className="input popup__input_type_name"
 				       name="popup__input_type_name"
 				       minLength="2"
 				       maxLength="40"
 				       required={true}
 				       placeholder="Введите имя"
 				/>
-				<span className="popup__input-span-error popup__input-name-error"> </span>
 			</div>
 			<div className="popup__label">
 				<Input value={about} onChange={(e) => setAbout(e.target.value)}
 							 type="text"
 							 id="popup__input-occupation"
-							 className="popup__input popup__input_type_occupation"
+							 className="input popup__input_type_occupation"
 							 name="popup__input_type_occupation"
 							 minLength="2"
 							 maxLength="200"
 							 required={true}
 							 placeholder="Укажите род деятельности"
 				/>
-				<span className="popup__input-span-error popup__input-occupation-error"> </span>
 			</div>
 		</PopupWithForm>
 	)

@@ -1,0 +1,11 @@
+.authentication {
+	margin-top: 60px;
+	height: 100%;
+}
+
+@media screen and (max-width: 900px){
+	.authentication {
+		padding-left: 30px;
+		padding-right: 30px;
+	}
+}

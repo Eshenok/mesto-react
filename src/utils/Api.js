@@ -103,6 +103,7 @@
    preloadData() {
      return Promise.all([this.getUserInfo(), this.getInitialCards()]);
    }
+   
  }
   
 

@@ -1,14 +1,21 @@
 import React, {useState, useEffect} from 'react';
+import {Route, useHistory, Redirect, Switch, useRouteMatch} from "react-router-dom";
 import Header from './Header.js';
-import Main from './Main.js';
+import Main from './pages/Main.js';
 import Footer from './Footer.js';
 import ImagePopup from "./popups/ImagePopup.js";
 import Api from '../utils/Api.js';
+import Auth from "../utils/Auth.js";
 import {CurrentUserContext} from "../contexts/CurrentUserContext.js";
 import EditProfilePopup from "./popups/EditProfilePopup.js";
 import EditAvatarPopup from "./popups/EditAvatarPopup.js";
 import AddCardPopup from "./popups/AddCardPopup.js";
 import ConfirmPopup from "./popups/ConfirmPopup.js";
+import Login from "./pages/Login";
+import Registry from "./pages/Registry";
+import ProtectedRoute from "./pages/ProtectedRoute";
+import NotFound from "./pages/NotFound";
+import SuccessStatePopup from "./popups/SuccessStatePopup.js";
 
 function App() {
 	
@@ -17,13 +24,17 @@ function App() {
 	const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
 	const [isAddCardPopupOpen, setIsAddCardPopupOpen] = useState(false);
 	const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
+	const [isSuccessPopupOpen, setIsSuccessPopupOpen] = useState({open: false, status: false});
 	const [selectedCard, setSelectedCard] = useState({});
 	const [currentUser, setCurrentUser] = useState({});
 	const [cards, setCards] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [currentCard, setCurrentCard] = useState('');
-	
+	const [loggedIn, setLoggedIn] = useState(false);
+	const [email, setEmail] = useState('');
 	const isOpen = isEditProfilePopupOpen || isEditAvatarPopupOpen || isAddCardPopupOpen || isImagePopupOpen || isConfirmPopupOpen;
+	const history = useHistory();
+	let {path, url} = useRouteMatch();
 	
 	useEffect(() => {
 		Api.preloadData()
@@ -49,6 +60,55 @@ function App() {
 			}
 		}
 	}, [isOpen])
+	
+	useEffect(() => {
+		tokenCheck();
+	}, [])
+	
+	/*функции auth*/
+	function tokenCheck() {
+		const jwt = localStorage.getItem('jwt');
+		if (jwt) {
+			Auth.getContent(jwt).then((res) => {
+				if(res) {
+					setEmail(res.data.email);
+					setLoggedIn(true);
+					history.push('/main');
+				}
+			})
+		}
+	}
+	
+	function handleSubmitRegistry(email, pass) {
+		Auth.registry(email, pass).then((res) => {
+			if (res) {
+				setIsSuccessPopupOpen({open: true, status: true})
+				history.push('/sign-in');
+			} else {
+				setIsSuccessPopupOpen({open: true, status: false})
+			}
+		})
+	}
+	
+	function handleSubmitSignIn(email, pass) {
+		Auth.authorize(email, pass).then((res) => {
+			if (res) {
+				setEmail(email);
+				setLoggedIn(true);
+				localStorage.setItem('jwt', res.token);
+				console.log(localStorage.getItem('jwt'))
+				history.push('/main');
+			} else {
+				setIsSuccessPopupOpen({open: true, status: false})
+			}
+		})
+	}
+	
+	function handleSignOut() {
+		localStorage.removeItem('jwt');
+		history.push('/sign-in');
+		setLoggedIn(false);
+	}
 	
 	/* Функции взаимодействия с API */
 	function putProfileData ({name, about}) {
@@ -121,6 +181,7 @@ function App() {
 	}
 	
 	function closeAllPopups () {
+		setIsSuccessPopupOpen({...isSuccessPopupOpen, open: false});
 		setIsConfirmPopupOpen(false);
 		setIsEditAvatarPopupOpen(false);
 		setIsAddCardPopupOpen(false);
@@ -136,18 +197,49 @@ function App() {
 				closeAllPopups();
 			}).catch((err) => console.log(err));
 	}
-	
+
 	return (
 		<CurrentUserContext.Provider value={currentUser}>
-			<Header />
-			<Main cards={cards} onCardLike={handleCardLike} onCardDel={handleRemoveCard} onSelectCard={handleCardClick} onEditProfile={handleEditProfile} onEditAvatar={handleEditAvatar} onAddCard={handleAddCard} />
-			<Footer />
+			<SuccessStatePopup status={true} onClose={closeAllPopups}/>
+			<Header onClose={handleSignOut} email={email} link={history.location.pathname} loggedIn={loggedIn}/>
+				<Switch>
+					<ProtectedRoute
+						path="/main"
+						component={Main}
+						cards={cards}
+						onCardLike={handleCardLike}
+						onCardDel={handleRemoveCard}
+						onSelectCard={handleCardClick}
+						onEditProfile={handleEditProfile}
+						onEditAvatar={handleEditAvatar}
+						onAddCard={handleAddCard}
+						loggedIn={loggedIn}
+					/>
+					{/*компоненты auth*/}
+					<Route path="/sign-in">
+						{loggedIn ? <Redirect to="/main" /> : <Login history={history} onSubmit={handleSubmitSignIn} />}
+					</Route>
+					
+					<Route path="/sign-up">
+						{loggedIn ? <Redirect to="/main" /> : <Registry history={history} onSubmit={handleSubmitRegistry} />}
+					</Route>
+					
+					<Route exact path="/">
+						{loggedIn ? <Redirect to="/main" /> : <Redirect to="/sign-in" /> }
+					</Route>
+					
+					<Route path="*">
+						<NotFound />
+					</Route>
+				</Switch>
+			{loggedIn ? <Footer /> : <></>}
 			{/*компоненты попапов*/}
 			<EditProfilePopup buttonTitle={isLoading ? 'Сохранение...' : 'Сохранить'} onSubmit={putProfileData} onClose={closeAllPopups} isOpen={isEditProfilePopupOpen} />
 			<EditAvatarPopup buttonTitle={isLoading ? 'Сохранение...' : 'Сохранить'} onSubmit={putAvatar} onClose={closeAllPopups}  isOpen={isEditAvatarPopupOpen} />
 			<AddCardPopup buttonTitle={isLoading ? 'Создаем...' : 'Создать'} onSubmit={putNewCard} onClose={closeAllPopups} isOpen={isAddCardPopupOpen} />
 			<ConfirmPopup onClose={closeAllPopups} isOpen={isConfirmPopupOpen} onSubmit={submitRemoveCard} />
 			<ImagePopup card={selectedCard} onClose={closeAllPopups} />
+			<SuccessStatePopup status={isSuccessPopupOpen.status} isOpen={isSuccessPopupOpen.open} onClose={closeAllPopups}/>
 		</CurrentUserContext.Provider>
 	);
 }
