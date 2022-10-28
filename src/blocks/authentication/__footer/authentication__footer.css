@@ -1,7 +1,6 @@
 .authentication__footer {
-	position: absolute;
-	bottom: 80px;
-	display: flex;
+	display: grid;
 	flex-direction: column;
-	width: 358px;
+	grid-template-columns: 1fr;
+	margin-top: 216px;
 }

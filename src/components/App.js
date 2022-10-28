@@ -15,6 +15,7 @@ import Login from "./pages/Login";
 import Registry from "./pages/Registry";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import NotFound from "./pages/NotFound";
+import SuccessStatePopup from "./popups/SuccessStatePopup.js";
 
 function App() {
 	
@@ -23,6 +24,7 @@ function App() {
 	const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
 	const [isAddCardPopupOpen, setIsAddCardPopupOpen] = useState(false);
 	const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
+	const [isSuccessPopupOpen, setIsSuccessPopupOpen] = useState({open: false, status: false});
 	const [selectedCard, setSelectedCard] = useState({});
 	const [currentUser, setCurrentUser] = useState({});
 	const [cards, setCards] = useState([]);
@@ -68,8 +70,8 @@ function App() {
 		const jwt = localStorage.getItem('jwt');
 		if (jwt) {
 			Auth.getContent(jwt).then((res) => {
-				console.log(res)
-				if(res.ok) {
+				if(res) {
+					setEmail(res.data.email);
 					setLoggedIn(true);
 					history.push('/main');
 				}
@@ -79,18 +81,27 @@ function App() {
 	
 	function handleSubmitRegistry(email, pass) {
 		Auth.registry(email, pass).then((res) => {
-			history.push('/sign-in');
-		}).catch((err) => {console.log(err)})
+			if (res) {
+				setIsSuccessPopupOpen({open: true, status: true})
+				history.push('/sign-in');
+			} else {
+				setIsSuccessPopupOpen({open: true, status: false})
+			}
+		})
 	}
 	
 	function handleSubmitSignIn(email, pass) {
 		Auth.authorize(email, pass).then((res) => {
-			setEmail(email);
-			setLoggedIn(true);
-			localStorage.setItem('jwt', res.token);
-			console.log(localStorage.getItem('jwt'))
-			history.push('/main');
-		}).catch((err) => {console.log(err)})
+			if (res) {
+				setEmail(email);
+				setLoggedIn(true);
+				localStorage.setItem('jwt', res.token);
+				console.log(localStorage.getItem('jwt'))
+				history.push('/main');
+			} else {
+				setIsSuccessPopupOpen({open: true, status: false})
+			}
+		})
 	}
 	
 	function handleSignOut() {
@@ -170,6 +181,7 @@ function App() {
 	}
 	
 	function closeAllPopups () {
+		setIsSuccessPopupOpen({...isSuccessPopupOpen, open: false});
 		setIsConfirmPopupOpen(false);
 		setIsEditAvatarPopupOpen(false);
 		setIsAddCardPopupOpen(false);
@@ -188,6 +200,7 @@ function App() {
 
 	return (
 		<CurrentUserContext.Provider value={currentUser}>
+			<SuccessStatePopup status={true} onClose={closeAllPopups}/>
 			<Header onClose={handleSignOut} email={email} link={history.location.pathname} loggedIn={loggedIn}/>
 				<Switch>
 					<ProtectedRoute
@@ -226,6 +239,7 @@ function App() {
 			<AddCardPopup buttonTitle={isLoading ? 'Создаем...' : 'Создать'} onSubmit={putNewCard} onClose={closeAllPopups} isOpen={isAddCardPopupOpen} />
 			<ConfirmPopup onClose={closeAllPopups} isOpen={isConfirmPopupOpen} onSubmit={submitRemoveCard} />
 			<ImagePopup card={selectedCard} onClose={closeAllPopups} />
+			<SuccessStatePopup status={isSuccessPopupOpen.status} isOpen={isSuccessPopupOpen.open} onClose={closeAllPopups}/>
 		</CurrentUserContext.Provider>
 	);
 }

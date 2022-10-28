@@ -14,7 +14,7 @@ class Auth {
 				"password": pass
 			})
 		})
-			.then(res=>res.json())
+			.then((res) => { if (res.ok) {return res.json()}})
 			.then(res => res)
 	}
 	
@@ -29,7 +29,7 @@ class Auth {
 				"password": pass
 			})
 		})
-			.then(res => res.json())
+			.then((res) => { if (res.ok) {return res.json()}})
 			.then(res => res);
 	}
 	
@@ -41,7 +41,7 @@ class Auth {
 				"Authorization" : `Bearer ${jwt}`
 			}
 		})
-			.then(res => res.json())
+			.then((res) => { if (res.ok) {return res.json()}})
 			.then(res=>res);
 	}
 	
