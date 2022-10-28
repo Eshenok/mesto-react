@@ -96,7 +96,6 @@ function App() {
 				setEmail(email);
 				setLoggedIn(true);
 				localStorage.setItem('jwt', res.token);
-				console.log(localStorage.getItem('jwt'))
 				history.push('/main');
 			} else {
 				setIsSuccessPopupOpen({open: true, status: false})
