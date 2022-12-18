@@ -8,11 +8,11 @@ export default function Card (props) {
 	const cardLikeButtonClassName = (`button button_icon_like ${checkIsLiked() ? 'button_icon_like-active' : ''}`);
 	
 	function checkIsLiked () {
-		return props.card.likes.some((item) => {return (item._id === currentUser._id)});
+		return props.card.likes.some((item) => {return (item === currentUser._id)});
 	}
 	
 	function checkIsOwn () {
-		return props.card.owner._id === currentUser._id;
+		return props.card.owner === currentUser._id;
 	}
 	
 	function handleLikeClick() {

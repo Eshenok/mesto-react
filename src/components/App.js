@@ -1,3 +1,4 @@
+// Импорты
 import React, {useState, useEffect} from 'react';
 import {Route, useHistory, Redirect, Switch, useRouteMatch} from "react-router-dom";
 import Header from './Header.js';
@@ -15,10 +16,11 @@ import Login from "./pages/Login";
 import Registry from "./pages/Registry";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import NotFound from "./pages/NotFound";
-import SuccessStatePopup from "./popups/SuccessStatePopup.js";
+import InfoTooltip from "./popups/InfoTooltip.js";
 
 function App() {
-	
+
+	// Стейты
 	const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState(false);
 	const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
 	const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
@@ -29,24 +31,32 @@ function App() {
 	const [currentUser, setCurrentUser] = useState({});
 	const [cards, setCards] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
-	const [currentCard, setCurrentCard] = useState('');
+	const [currentCard, setCurrentCard] = useState(null);
 	const [loggedIn, setLoggedIn] = useState(false);
 	const [email, setEmail] = useState('');
-	const isOpen = isEditProfilePopupOpen || isEditAvatarPopupOpen || isAddCardPopupOpen || isImagePopupOpen || isConfirmPopupOpen;
-	const history = useHistory();
-	let {path, url} = useRouteMatch();
-	
+
+
+	const isOpen = isEditProfilePopupOpen || isEditAvatarPopupOpen || isAddCardPopupOpen || isImagePopupOpen || isConfirmPopupOpen || isSuccessPopupOpen.open;
+	const history = useHistory(); // Хук для истории перехода по ссылкам
+	let {path, url} = useRouteMatch(); // По факту не используется, но только с ним работает приложение
+
+	/* Хуки effect */
+
+	// Хук предзагрузки данных
 	useEffect(() => {
-		Api.preloadData()
-			.then(([userInfo, initialCards]) => {
-				setCurrentUser(userInfo);
-				setCards(initialCards);
-			})
-			.catch((err) => {
-				console.log(err);
-			})
-	}, []);
-	
+		if (loggedIn) {
+			Api.preloadData()
+				.then(([userInfo, initialCards]) => {
+					setCurrentUser(userInfo);
+					setCards(initialCards);
+				})
+				.catch((err) => {
+					console.log(err);
+				})
+		}
+	}, [loggedIn]);
+
+	// Хук навышивания слушателя для Esc
 	useEffect(() => {
 		function handlePressEsc(e) {
 			if (e.key === 'Escape') {
@@ -54,73 +64,72 @@ function App() {
 			}
 		}
 		if (isOpen) {
+			// Сработает только если попап открыт
 			document.addEventListener('keydown', handlePressEsc);
 			return () => {
 				document.removeEventListener('keydown', handlePressEsc);
 			}
 		}
 	}, [isOpen])
-	
+
+	// Хук для получения инфу пользователя, только если кука есть
 	useEffect(() => {
-		tokenCheck();
-	}, [])
+		if (!loggedIn) {
+			getUser();
+		}
+	}, []);
 	
 	/*функции auth*/
-	function tokenCheck() {
-		const jwt = localStorage.getItem('jwt');
-		if (jwt) {
-			Auth.getContent(jwt).then((res) => {
-				if(res) {
-					setEmail(res.data.email);
-					setLoggedIn(true);
-					history.push('/main');
-				}
-			})
+	function getUser() {
+		Auth.getCurrentUser()
+			.then((res) => { // Получаем контент
+			setEmail(res.email); // Записываем в state email
+			setLoggedIn(true); // Переключаем state залогинен ли пользователь
+			history.push('/main'); // Переходим на /main
+		})
+			.catch((err) => {console.log(err)});
 		}
-	}
-	
+
+	// Регистрация пользователя
 	function handleSubmitRegistry(email, pass) {
 		Auth.registry(email, pass).then((res) => {
-			if (res) {
-				setIsSuccessPopupOpen({open: true, status: true})
-				history.push('/sign-in');
-			} else {
-				setIsSuccessPopupOpen({open: true, status: false})
-			}
+			setIsSuccessPopupOpen({open: true, status: true}) // Переключаем state
+			history.push('/sign-in'); // После регистрации переходим на логинг
 		})
+			.catch((err) => setIsSuccessPopupOpen({open: true, status: false}));
 	}
-	
+
+	// Авторизация (логинг)
 	function handleSubmitSignIn(email, pass) {
 		Auth.authorize(email, pass).then((res) => {
-			if (res) {
-				setEmail(email);
-				setLoggedIn(true);
-				localStorage.setItem('jwt', res.token);
-				history.push('/main');
-			} else {
-				setIsSuccessPopupOpen({open: true, status: false})
-			}
+			setEmail(email); // Устанавливаем state email
+			setLoggedIn(true); // Переключаем state залогинен ли пользваотель
+			history.push('/main'); // Переключаем на /main
 		})
+			.catch((err) => setIsSuccessPopupOpen({open: true, status: false}))
 	}
-	
+
+	// Выход
 	function handleSignOut() {
-		localStorage.removeItem('jwt');
-		history.push('/sign-in');
-		setLoggedIn(false);
+		history.push('/sign-in'); // Перекидываем на логинг
+		setLoggedIn(false); // Переключаем state залогинен ли пользователь
 	}
 	
 	/* Функции взаимодействия с API */
+
+	// Передаем новые данные юзера
 	function putProfileData ({name, about}) {
-		setIsLoading(true)
+		setIsLoading(true) // Запускаем загрузку
 		Api.putProfileData(name, about)
 			.then((res) => {
 				setCurrentUser(res);
 				closeAllPopups();
 			})
 			.catch((err) => console.log(err))
-			.finally(() => {setIsLoading(false);})
+			.finally(() => {setIsLoading(false);}) // Когда все прошло вырубаем загрузку
 	}
-	
+
+	// Передаем новый аватар
 	function putAvatar (url) {
 		setIsLoading(true)
 		Api.putNewAvatar(url)
@@ -134,7 +143,7 @@ function App() {
 	
 	/* Card */
 	function handleCardLike(card, isLiked) {
-		if (!isLiked) {
+		if (!isLiked) { // Если карточка не лайкнута
 			Api.putLike(card._id)
 				.then((res) => {
 					setCards((state) => state.map((c) => c._id === card._id ? res : c));
@@ -199,7 +208,7 @@ function App() {
 
 	return (
 		<CurrentUserContext.Provider value={currentUser}>
-			<SuccessStatePopup status={true} onClose={closeAllPopups}/>
+			<InfoTooltip status={true} onClose={closeAllPopups}/>
 			<Header onClose={handleSignOut} email={email} link={history.location.pathname} loggedIn={loggedIn}/>
 				<Switch>
 					<ProtectedRoute
@@ -238,7 +247,7 @@ function App() {
 			<AddCardPopup buttonTitle={isLoading ? 'Создаем...' : 'Создать'} onSubmit={putNewCard} onClose={closeAllPopups} isOpen={isAddCardPopupOpen} />
 			<ConfirmPopup onClose={closeAllPopups} isOpen={isConfirmPopupOpen} onSubmit={submitRemoveCard} />
 			<ImagePopup card={selectedCard} onClose={closeAllPopups} />
-			<SuccessStatePopup status={isSuccessPopupOpen.status} isOpen={isSuccessPopupOpen.open} onClose={closeAllPopups}/>
+			<InfoTooltip status={isSuccessPopupOpen.status} isOpen={isSuccessPopupOpen.open} onClose={closeAllPopups}/>
 		</CurrentUserContext.Provider>
 	);
 }

@@ -1,6 +1,14 @@
 class Auth {
 	constructor(options) {
 		this._baseUrl = options.baseUrl;
+		this._credentials = options.credentials;
+	}
+	
+	_getResponseData(res) {
+		if (res.ok) {
+			return res.json();
+		}
+		return Promise.reject(`Ошибка: ${res.status}`)
 	}
 	
 	registry (email, pass) {
@@ -14,7 +22,7 @@ class Auth {
 				"password": pass
 			})
 		})
-			.then((res) => { if (res.ok) {return res.json()}})
+			.then(res => this._getResponseData(res))
 			.then(res => res)
 	}
 	
@@ -24,29 +32,30 @@ class Auth {
 			headers: {
 				"Content-Type": "application/json"
 			},
+			credentials: 'include',
 			body: JSON.stringify({
 				"email": email,
 				"password": pass
 			})
 		})
-			.then((res) => { if (res.ok) {return res.json()}})
+			.then(res => this._getResponseData(res))
 			.then(res => res);
 	}
 	
-	getContent (jwt) {
+	getCurrentUser () {
 		return fetch(`${this._baseUrl}/users/me`, {
 			method: 'GET',
 			headers: {
-				"Content-Type": "application/json",
-				"Authorization" : `Bearer ${jwt}`
-			}
+				"Content-Type": "application/json"
+			},
+			credentials: this._credentials,
 		})
-			.then((res) => { if (res.ok) {return res.json()}})
+			.then(res => this._getResponseData(res))
 			.then(res=>res);
 	}
-	
 }
 
 export default new Auth({
-	baseUrl: 'https://auth.nomoreparties.co',
+	baseUrl: 'https://api.voloshin.eshenok.nomoredomains.club',
+	credentials: 'include',
 	});

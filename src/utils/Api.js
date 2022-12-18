@@ -2,6 +2,7 @@
    constructor(options) {
      this._baseUrl = options.baseUrl;
      this._headers = options.headers;
+     this._credentials = options.credentials;
    }
   
    _getResponseData(res) {
@@ -14,6 +15,7 @@
    getInitialCards() {
      return fetch(`${this._baseUrl}/cards`, {
        headers: this._headers,
+       credentials: this._credentials,
      }).then(res => {
        return this._getResponseData(res);
      })
@@ -22,6 +24,7 @@
    getUserInfo() {
      return fetch(`${this._baseUrl}/users/me`, {
        headers: this._headers,
+       credentials: this._credentials,
      }).then(res => {
        return this._getResponseData(res);
      })
@@ -32,6 +35,7 @@
      return fetch(`${this._baseUrl}/users/me`, { // Редактирование профиля
        method: 'PATCH',
        headers: this._headers,
+       credentials: this._credentials,
        body: JSON.stringify({
          name: name,
          about: about
@@ -46,6 +50,7 @@
      return fetch(`${this._baseUrl}/cards `, {
        method: 'POST',
        headers: this._headers,
+       credentials: this._credentials,
        body: JSON.stringify({
          name: name,
          link: link
@@ -60,6 +65,7 @@
      return fetch(`${this._baseUrl}/users/me/avatar`, {
        method: 'PATCH',
        headers: this._headers,
+       credentials: this._credentials,
        body: JSON.stringify({
          avatar: avatarUrl
        })
@@ -73,6 +79,7 @@
      return fetch(`${this._baseUrl}/cards/${cardId}`, {
        method: 'DELETE',
        headers: this._headers,
+       credentials: this._credentials,
      })
        .then(res => {
          return this._getResponseData(res);
@@ -83,6 +90,7 @@
      return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
        method: 'PUT',
        headers: this._headers,
+       credentials: this._credentials,
      })
        .then(res => {
          return this._getResponseData(res);
@@ -93,6 +101,7 @@
      return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
        method: 'DELETE',
        headers: this._headers,
+       credentials: this._credentials,
      })
        .then(res => {
          return this._getResponseData(res);
@@ -109,8 +118,9 @@
 
 
  export default new Api({
-   baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-49',
+   baseUrl: 'https://api.voloshin.eshenok.nomoredomains.club',
    headers: {
-     authorization: '77ff3fbe-135e-4442-b69c-13d620392262',
      'Content-Type': 'application/json'
-   }});
+   },
+   credentials: 'include',
+ });
