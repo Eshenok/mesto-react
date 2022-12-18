@@ -111,8 +111,14 @@ function App() {
 
 	// Выход
 	function handleSignOut() {
-		history.push('/sign-in'); // Перекидываем на логинг
-		setLoggedIn(false); // Переключаем state залогинен ли пользователь
+		Auth.logout()
+			.then((res) => {
+				history.push('/sign-in'); // Перекидываем на логинг
+				setLoggedIn(false); // Переключаем state залогинен ли пользователь
+			})
+			.catch((err) => {
+				console.log(err);
+				setIsSuccessPopupOpen({ open: true, status: false })})
 	}
 	
 	/* Функции взаимодействия с API */

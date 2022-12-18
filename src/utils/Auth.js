@@ -53,6 +53,19 @@ class Auth {
 			.then(res => this._getResponseData(res))
 			.then(res=>res);
 	}
+
+	logout () {
+		return fetch(`${this._baseUrl}/logout`, {
+			method: 'GET',
+			headers: {
+				"Content-Type": "application.json"
+			},
+			credentials: "include",
+		})
+			.then(res => this._getResponseData(res))
+			.then(res => res);
+	}
+
 }
 
 export default new Auth({
